@@ -1,0 +1,8 @@
+[
+  {"question": "how many times does a failed webhook retry and what is the backoff", "expect": "dead-letter"},
+  {"question": "how are duplicate webhooks from the same provider avoided", "expect": "provider_message_id"},
+  {"question": "where are the vectors stored", "expect": "pgvector"},
+  {"question": "what happens when confidence is too low to answer", "expect": "floor"},
+  {"question": "what is the biggest cause of wrong answers", "expect": "OCR"},
+  {"question": "how much latency does the reranker add", "expect": "180 milliseconds"}
+]
