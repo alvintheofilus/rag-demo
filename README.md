@@ -4,9 +4,12 @@ A retrieval-augmented answering pipeline in one dependency-free Python file, bui
 the parts that decide whether a RAG system is trustworthy: **chunking, retrieval, a
 relevance floor that refuses to answer, and citations on every claim.**
 
+![The demo UI: a question, an answer with a citation, and the retrieved sources with scores](assets/ui.png)
+
 ```bash
+python3 rag.py serve                        # web UI on http://127.0.0.1:8010
 python3 rag.py ingest docs/                 # chunk + embed + index
-python3 rag.py ask "how are duplicate webhooks avoided?"
+python3 rag.py ask "how are duplicate webhooks avoided?"   # same pipeline, terminal
 python3 rag.py eval                         # hit@1 / hit@4 against a golden set
 ```
 
@@ -21,6 +24,7 @@ No install step, no model download, no API key. `index.json` is generated.
 | Cosine retrieval + relevance floor | `retrieve()`, `answer()` |
 | Grounded answering with `[n]` citations | `PROMPT`, `answer()` |
 | Retrieval quality measured, not assumed | `evaluate()` + `questions.json` |
+| Web UI with clickable citations, zero frontend build | `serve()`, `render()` |
 
 ## Sample run
 
