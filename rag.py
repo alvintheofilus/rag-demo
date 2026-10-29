@@ -103,10 +103,28 @@ def embed_one(text, idx):
     return openai_embed([text])[0] if idx["embedder"] == "openai" else local_vec(text, idx["idf"])
 
 
+def terms(text):
+    return [w for w in WORD.findall(text.lower()) if len(w) > 2]
+
+
+def lexical(question, text, idf):
+    """IDF-weighted share of question terms present in the chunk (5-char prefix ≈ stemming)."""
+    q, words = terms(question), terms(text)
+    if not q:
+        return 0.0
+    total = sum(idf.get(t, 1.0) for t in q) or 1.0
+    got = sum(idf.get(t, 1.0) for t in q
+              if any(w == t or (len(w) > 4 and len(t) > 4 and w[:5] == t[:5]) for w in words))
+    return got / total
+
+
 def retrieve(question, k=4):
+    """Hybrid: cosine on the vector index plus a lexical bonus. The hashing embedder is weak on
+    paraphrase, so lexical overlap keeps exact vocabulary questions from landing at rank 3."""
     idx = load()
     qv = embed_one(question, idx)
-    scored = sorted(((cosine(qv, d["vec"]), d) for d in idx["docs"]), key=lambda x: -x[0])
+    scored = sorted(((cosine(qv, d["vec"]) + 0.25 * lexical(question, d["text"], idx["idf"]), d) for d in idx["docs"]),
+                    key=lambda x: -x[0])
     return scored[:k]
 
 

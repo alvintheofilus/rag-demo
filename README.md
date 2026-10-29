@@ -4,6 +4,10 @@ A retrieval-augmented answering pipeline in one dependency-free Python file, bui
 the parts that decide whether a RAG system is trustworthy: **chunking, retrieval, a
 relevance floor that refuses to answer, and citations on every claim.**
 
+The sample corpus is deliberately mundane — three short documents about teaching a dog to
+spin — because the point is the pipeline, not the domain. Point it at your own documents with
+`python3 rag.py ingest <folder>`.
+
 ![The demo UI: a question, an answer with a citation, and the retrieved sources with scores](assets/ui.png)
 
 ```bash
@@ -30,15 +34,19 @@ No install step, no model download, no API key. `index.json` is generated.
 
 ```
 $ python3 rag.py eval
-PASS hit@1: how many times does a failed webhook retry and what is the backoff
-PASS hit@1: how are duplicate webhooks from the same provider avoided
-PASS hit@1: where are the vectors stored
-PASS hit@2: what happens when confidence is too low to answer
-PASS hit@1: what is the biggest cause of wrong answers
-PASS hit@1: how much latency does the reranker add
+PASS hit@1: how long should each training session be
+PASS hit@2: what do I do if the dog refuses to turn
+PASS hit@1: when should I add the word spin
+PASS hit@3: how do I stop using the treat as a lure
+PASS hit@2: how often should I reward the dog later on
+PASS hit@1: should I physically push the dog to turn
 
-hit@1 5/6  hit@4 6/6
+hit@1 3/6  hit@4 6/6
 ```
+
+`hit@4 6/6` is the number that matters for a RAG pipeline: the correct chunk always reaches
+the prompt. `hit@1 3/6` is where the local hashing embedder hits its ceiling on paraphrase —
+the production system put a cross-encoder reranker in exactly that gap.
 
 ## Design decisions
 
